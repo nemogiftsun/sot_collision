@@ -6,7 +6,7 @@
 
 
 
-#include "sot-collision.hh"
+#include "sot_collision.hh"
 #include <sot/core/debug.hh>
 
 namespace ml = maal::boost;
