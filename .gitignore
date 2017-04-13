@@ -1,29 +1,18 @@
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+bin/
+build/
+cfg/cpp/
+docs/
+lib/
+msg/lisp/
+msg_gen/
+src/lisp/
+src/sot_pr2/
+srv/lisp/
+srv_gen/
 
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+*.cfgc
+*~
+*.swm
+*.swn
+*.swo
+*.swp
