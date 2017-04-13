@@ -1,0 +1,54 @@
+#
+#  Copyright 2013 CNRS
+#  Author: Nirmal Giftsun
+#
+
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+
+SET(CXX_DISABLE_WERROR TRUE)
+INCLUDE(cmake/base.cmake)
+INCLUDE(cmake/cpack.cmake)
+INCLUDE(cmake/boost.cmake)
+
+# set up project
+#project(${PROJECT_NAME})
+#SET(PROJECT_VERSION 1.0)
+
+SET(PROJECT_NAME sot_collision)
+project(${PROJECT_NAME})
+
+SET(PROJECT_VERSION 1.0)
+SET(PROJECT_DESCRIPTION "Reactive Collission checker ")
+SET(PROJECT_URL "")
+
+set(Python_ADDITIONAL_VERSIONS 2.7)
+SET(${PROJECT_NAME}_HEADERS
+    include/sot_collision.hh
+)
+
+SETUP_PROJECT()
+
+#set
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/src)
+set(CMAKE_INSTALL_RPATH "${LIBRARY_OUTPUT_PATH}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${LIBRARY_OUTPUT_PATH}")
+
+
+#  Dependencies
+ADD_REQUIRED_DEPENDENCY("dynamic-graph")
+ADD_REQUIRED_DEPENDENCY("dynamic-graph-python")
+ADD_REQUIRED_DEPENDENCY("fcl")
+ADD_REQUIRED_DEPENDENCY("hpp-fcl")
+ADD_REQUIRED_DEPENDENCY("jrl-mathtools")
+ADD_REQUIRED_DEPENDENCY("jrl-mal")
+ADD_REQUIRED_DEPENDENCY("sot-core")
+ADD_REQUIRED_DEPENDENCY("dynamic_graph_bridge")
+
+
+ADD_SUBDIRECTORY(src)
+
+SETUP_PROJECT_FINALIZE()
+
+
+
