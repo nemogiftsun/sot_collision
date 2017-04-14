@@ -122,7 +122,7 @@ int& SotCollision::updatefclmodels(int& dummy,int time)
        Vec3f trans(T(0,3),T(1,3),T(2,3));
        
        transform_links[i]= Transform3f(rot,trans);
-       transform_links[i] = transform_links[i] * transform_joint_links[i];
+       transform_links[i] = transform_links[i]* transform_joint_links[i];
        
        Vec3f tpart = transform_links[i].getTranslation();
        Quaternion3f quat = transform_links[i].getQuatRotation();
@@ -220,13 +220,16 @@ int& SotCollision::updatefclmodels(int& dummy,int time)
                             Transform3f tli=transform_links[i]; Transform3f tlj=transform_links[i];
                             Transform3f temp(rotation,lchange);
                             l1 = (tli*temp).getTranslation();
+			    //Vec3f linit(0,0,0);
                             Vec3f lchange1(0,0,((dist)));
                             //lchange = (0,0,-0.1);
                             //temp.setTranslation(lchange);   
                             Transform3f temp1(rotation,lchange1); 
                             //Vec3f lchange = (0,0,-dist);
                             //transform_links[i].setTranslation(lchange);                  
-                            l2 = (tlj*temp1).getTranslation(); 
+                            //l2 = (tlj*temp1).getTranslation(); 
+                            l2 = lchange1;
+                            //l1 = linit;
                             
                             //std::cout << "transform x" << transform_links[i].getTranslation()[0] <<" y "<<transform_links[i].getTranslation()[1]<<" z "<<transform_links[i].getTranslation()[2]<<std::endl;    
 			    //std::cout << "transform rotation x " << transform_links[i].getQuatRotation().getX() << " rotation y " << transform_links[i].getQuatRotation().getY() << "transform rotation z " << transform_links[i].getQuatRotation().getZ()<< "transform rotation w " << transform_links[i].getQuatRotation().getW() << std::endl;    
@@ -307,7 +310,7 @@ for (int p=0; p < num_collisionpairs;p++)
      closestPointJ(0,p) = l2[0];closestPointJ(1,p) = l2[1];closestPointJ(2,p) = l2[2];
      //std::cout << "cjl1 = "  <<l1 <<std::endl;
      //std::cout << "cjl2 = "  <<l2 <<std::endl;
-     ln(0,0)= l[0]; ln(0,1)=l[1] ; ln(0,2)=l[2];
+     ln(0,0)= l2[0]; ln(0,1)=l2[1] ; ln(0,2)=l2[2];
      la(0,0)= l1[0]; la(0,1)=l1[1] ; la(0,2)=l1[2];
      // closest point computation in object a and b
 
@@ -373,7 +376,7 @@ for (int p=0; p < num_collisionpairs;p++)
      }
      else
      {
-      abpointgradient  = Jiv; //- (ssmaclosestpoint*Jiw);    
+      abpointgradient  = Jiv - (ssmaclosestpoint*Jiw);    
       //abpointgradient  = (Jiv+(la*Jiw)); 
      }
      //compute collision jacobian
@@ -382,7 +385,8 @@ for (int p=0; p < num_collisionpairs;p++)
      //abpoint 3*3
      sotDEBUG(1)<<"normal = " <<ln<<endl;
      //std::cout <<"normal = " <<ln<<std::endl;
-     cj = ln*abpointgradient;
+     
+     cj = -ln*abpointgradient;
      for (int d=0;d<cols;d++)
      {
       res(p,d) = cj(0,d); 
