@@ -48,35 +48,18 @@ namespace ml = maal::boost;
 #include <sot/core/matrix-geometry.hh>
 
 
-//#include "../../../src/collision_test.hh"
-
 using namespace std;
-using namespace fcl;
+
 using namespace ml;
 using namespace dynamicgraph::sot;
 using namespace dynamicgraph;
 
-//point in local coordinate frame
-typedef boost::tuples::tuple<FCL_REAL,FCL_REAL,FCL_REAL> XYZ;
-
-// tuple of inter-model distance and the closest point to the other model
-typedef boost::tuples::tuple<FCL_REAL,XYZ> One2OneModelDistance;
-
-// vector of model information
-typedef std::vector<One2OneModelDistance> One2ManyModelDistance;
-
-// vector of model information
-typedef std::vector<One2ManyModelDistance> InterModelDistanceMatrix;
 
 
 
 namespace dynamicgraph {
   namespace sotcollision {
 namespace dg = dynamicgraph;
-
-struct link_info {string link_type; string link_location;int index;};
-
-bool operator < (const link_info &link1,const link_info  &link2 ) { return 0; }
 
 class SotCollision : public Entity
     {
@@ -92,62 +75,15 @@ class SotCollision : public Entity
       virtual const std::string& getClassName (void) const {
 	return CLASS_NAME;
       }
-
       /// Header documentation of the python class
       virtual std::string getDocString () const {
 	return "sot-collision\n";
       }
 
-      /**
-	  \name Parameters
-	  @{
-      */
-      bool getcheck () const {
-	return check;
-      }
-      
-      double getdimension () const {
-	return dimension;
-      }
-      
-
-      dg::Matrix getfclstate () const {
-	return fclstate;
-      }
-
-      // methods
-
-      int& updatefclmodels(int& dummy,int time);
-
-      void buildACollisionModel();
-
-      void createcollisionpair(const std::string& body0, const std::string& body1);
-
-      void createcollisionlink(const std::string& bodyname,const std::string& bodytype,const std::string& bodynaturelocation, const dg::Vector& bodydescription);
-
       Vector& computeimdVector(Vector& res, int time );
-
       dg::Matrix& computeimdJacobian(dg::Matrix& res,int time );
-
-      dg::Matrix& computeClosestPointi(dg::Matrix& res,int time );
-
-      dg::Matrix& computeClosestPointj(dg::Matrix& res,int time );
-
-      dg::Matrix& computeCollisionModelState(dg::Matrix& res,int time );
-
-      // vars
-      dynamicgraph::SignalPtr<MatrixHomogeneous,int >& createPositionSignalIN(const std::string& signame);
-
-      dynamicgraph::SignalPtr<dg::Matrix,int >& createJacobiansignalIN(const std::string& signame);
-
-      dynamicgraph::SignalTimeDependent<dg::Matrix,int >& createIMDJacobianSignal();
-
-      dynamicgraph::SignalTimeDependent<dg::Vector,int >& createInterModelDistanceSignal();
-
-      std::map<std::string,int> fcl_body_map; 
-
-      std::map<int,link_info> link_info_map; 
-
+      dg::Matrix& computeClosestPoints(dg::Matrix& res,int time );    
+      MatrixHomogeneous& computecelltr(MatrixHomogeneous& res,int time );    
       MatrixHomogeneous UNIT_ROTATION;
 
     protected:
@@ -157,38 +93,18 @@ class SotCollision : public Entity
       static const std::string CLASS_NAME;
 
     private:
-      int dimension;
-      //intern signals
-      dynamicgraph::SignalTimeDependent<int,int> fclmodelupdateSINTERN;    
-      dynamicgraph::SignalPtr<MatrixHomogeneous,int > *body_transformation_input[30];
-      dynamicgraph::SignalPtr<dg::Matrix,int > *body_jacobian_input[30];
-      dynamicgraph::SignalPtr<dg::Matrix,int > *collision_body_jacobian_input[30];
-      dynamicgraph::SignalTimeDependent<dg::Vector,int> InterModelDistanceOUT;
       dynamicgraph::SignalTimeDependent<dg::Vector,int > collisionDistance;
-      dynamicgraph::SignalTimeDependent<dg::Matrix,int >collisionJacobian;
-      dynamicgraph::SignalTimeDependent<dg::Matrix,int >collisionModelState;
-      dynamicgraph::SignalTimeDependent<dg::Matrix,int > closestPointi;
-      dynamicgraph::SignalTimeDependent<dg::Matrix,int > closestPointj;
-
-      std::vector<Capsule> capsule_links;
-      std::vector<Box> box_links;
-      std::vector<Transform3f> transform_links;
-      std::vector<Transform3f> transform_joint_links;
-      std::list< dynamicgraph::SignalBase<int>*  > genericSignalRefs;
-      bool check;
-      double diff;
-      double distance;
-      double TimeCheck;
-      dg::Matrix fclstate;
-      dg::Matrix closestPointI, closestPointJ;
-         
-      dg::Matrix LinkDescription;
-      // collision pairs
-      std::vector< std::vector<std::string> >  collision_pairs;
-      int num_collisionpairs;
-      InterModelDistanceMatrix imdm;
-      SignalPtr<dg::Vector,int> proximitySensorSIN;
-
+      dynamicgraph::SignalTimeDependent<dg::Matrix,int > collisionJacobian;
+      dynamicgraph::SignalTimeDependent<dg::Matrix,int > closestPoints;
+      dynamicgraph::SignalTimeDependent<MatrixHomogeneous,int > celltr;
+      int num_skinsensors;
+      dg::Matrix ln;
+      SignalPtr<dg::Vector,int> proximitySensorDistanceSIN;
+      SignalPtr<dg::Matrix,int> proximitySensorPoseSIN;
+      SignalPtr<dg::Matrix,int> jointJacobianSIN;
+      SignalPtr<MatrixHomogeneous,int> jointTransformationSIN;   
+      dg::Matrix closestPointsAcc;   
+      MatrixHomogeneous ctr;
     };
   }
 }
