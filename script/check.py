@@ -4,10 +4,10 @@ from dynamic_graph.sot.core.matrix_util import matrixToTuple
 ca = sc.SotCollision("sc")
 ca.proximitySensorDistance.value = (0.07,)*8
 
-p = np.zeros((6,8))
+p = np.zeros((7,8))
 c = 0
 for i in range(8):
-    for j in range(6):
+    for j in range(7):
         c += 1
         p[j,i] = c
 pose = matrixToTuple(p)
